@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow_WorkflowDefinition apiMode="0" config="&lt;configuration />"
+    description="Change bulk index cache config for media agents by group - used for disable alert messages from auto configured MAs on VSA AppAware clients&#xd;&#xa;&#xd;&#xa;Created by : Ali Allomani &lt;ali.allomani@ts.fujitsu.com>"
+    inputs="&lt;inputs>&lt;ClientGroup class=&quot;commvault.msgs.CvEntities.ClientGroupEntity&quot; _list_=&quot;false&quot;>&lt;clientGroupName />&lt;clientGroupId />&lt;/ClientGroup>&lt;/inputs>"
+    interactive="0" isHtmlDescription="0"
+    name="BulkChangeMAIndexCacheConfig" outputs="&lt;outputs />"
+    revision="$Revision:  $"
+    uniqueGuid="f741e67f-79ff-40b5-a03c-04cb0c3f3383"
+    variables="&lt;variables />" webHidden="0" workflowId="0">
+    <schema>
+        <outputs className="" name="outputs" type=""/>
+        <variables className="" name="variables" type=""/>
+        <inputs attribute="0" className="" name="inputs" type="">
+            <children attribute="0"
+                className="commvault.msgs.CvEntities.ClientGroupEntity"
+                controlHidden="0" controlType="2" defaultValue=""
+                displayName="Client Group" documentation="" hidden="0"
+                inputType="commvault.msgs.CvEntities.ClientGroupEntity"
+                listType="0" maximumValue="" minimumValue=""
+                name="ClientGroup" readOnly="0" required="1"
+                searchable="0" type="{commvault.msgs.CvEntities}ClientGroupEntity">
+                <children attribute="0" className="java.lang.String"
+                    defaultValue="" inputType="java.lang.String"
+                    listType="0" name="clientGroupName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+                <children attribute="0" className="java.lang.Integer"
+                    defaultValue="" inputType="java.lang.Integer"
+                    listType="0" name="clientGroupId" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+            </children>
+        </inputs>
+        <config className="" name="configuration" type=""/>
+    </schema>
+    <Start commented="0" continueOnFailure="0" created="0"
+        description="" displayName="Start" height="36" interactive="0"
+        jobMode="0" name="Start" originalStyle="" skipAttempt="0"
+        style="image;image=/images/jgraphx/house.png"
+        uniqueName="Start_1" waitSetting="0" width="58" x="45" y="52">
+        <inputs val="&lt;inputs />"/>
+        <transition activity="CommServDBQuery_1" commented="0"
+            originalStyle="" points="" sourceX="72" sourceY="70"
+            status="0" style="defaultEdge" targetX="198" targetY="248"
+            transitionIndex="0" x="0" y="0">
+            <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+        </transition>
+    </Start>
+    <Activity commented="0" continueOnFailure="0"
+        created="1337083648420"
+        description="executes queries against the commserv database"
+        displayName="Fetch Media Agents" height="34" interactive="0"
+        jobMode="0" name="CommServDBQuery"
+        namespaceUri="commvault.cte.workflow.activities"
+        originalStyle="" skipAttempt="0"
+        style="label;image=CommServDBQuery"
+        uniqueName="CommServDBQuery_1" waitSetting="0" width="141"
+        x="193" y="236">
+        <inputs val="&lt;inputs>&lt;commCell />&lt;query>Select c.name&amp;#xD;&#xd;&#xa;From APP_Client c&amp;#xD;&#xd;&#xa;INNER JOIN APP_ClientGroupAssoc a ON c.id = a.clientId&amp;#xD;&#xd;&#xa;INNER JOIN APP_ClientProp d ON d.componentNameId = c.id&amp;#xD;&#xd;&#xa;WHERE a.clientGroupId = 'xpath:{/workflow/inputs/ClientGroup/clientGroupId}' and d.attrName='Idx: alert space' and d.attrVal &amp;gt; '1024.0'&lt;/query>&lt;/inputs>"/>
+        <transition activity="ForEach_1" commented="0" originalStyle=""
+            points="" sourceX="263" sourceY="253" status="0"
+            style="defaultEdge" targetX="584" targetY="113"
+            transitionIndex="0" x="0" y="0">
+            <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+        </transition>
+    </Activity>
+    <Activity commented="0" continueOnFailure="0"
+        created="1510143313357"
+        description="iterates a group of activities over a list of values"
+        displayName="ForEach" height="521" interactive="0" jobMode="0"
+        name="ForEach" namespaceUri="commvault.cte.workflow.activities"
+        originalStyle="" skipAttempt="0" style="swimlane"
+        uniqueName="ForEach_1" waitSetting="0" width="400" x="380" y="99">
+        <inputs val="&lt;inputs>&lt;name class=&quot;java.lang.String&quot;>row&lt;/name>&lt;values class=&quot;java.lang.Object&quot; _list_=&quot;false&quot;>xpath:{/workflow/CommServDBQuery_1/resultSets/row}&lt;/values>&lt;numberOfParallelExecutions class=&quot;java.lang.Integer&quot; _list_=&quot;false&quot;>1&lt;/numberOfParallelExecutions>&lt;continueOnFailure class=&quot;java.lang.Boolean&quot; _list_=&quot;false&quot;>false&lt;/continueOnFailure>&lt;/inputs>"/>
+        <superProcess>
+            <Start commented="0" continueOnFailure="0"
+                created="1510143313357" description=""
+                displayName="Start" height="30" interactive="0"
+                jobMode="0" name="Start" originalStyle=""
+                skipAttempt="0"
+                style="label;fillColor=#FFFF33;gradientColor=#FFFF00"
+                uniqueName="Start_2" waitSetting="0" width="120" x="74" y="52">
+                <inputs val="&lt;inputs />"/>
+                <transition activity="ExecuteScript_1" commented="0"
+                    originalStyle="" points="" sourceX="134"
+                    sourceY="67" status="0" style="defaultEdge"
+                    targetX="138" targetY="164" transitionIndex="0"
+                    x="0" y="0">
+                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+            </Start>
+            <Activity commented="0" continueOnFailure="1"
+                created="1510143889786" description=""
+                displayName="ExecuteScript" height="34" interactive="0"
+                jobMode="0" maxRestarts="0" name="ExecuteScript"
+                namespaceUri="commvault.cte.workflow.activities.cmd.operation"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.cmd.operation.OperationExecScript"
+                uniqueName="ExecuteScript_1" waitSetting="0" width="110"
+                x="83" y="147">
+                <inputs val="&lt;inputs>&lt;scriptName class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>setMediaAgentProperty&lt;/scriptName>&lt;arguments class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>-si xpath:{/workflow/ForEach_1/row/col[@name=&quot;name&quot;]} -si 11 -si 2&lt;/arguments>&lt;sessionOptions class=&quot;workflow.types.cmd.SessionOptions&quot; _list_=&quot;false&quot;>&lt;useImpersonatedAccount class=&quot;java.lang.Boolean&quot; _list_=&quot;false&quot;>true&lt;/useImpersonatedAccount>&lt;tokenFile class=&quot;java.lang.String&quot; _list_=&quot;false&quot; />&lt;token class=&quot;java.lang.String&quot; _list_=&quot;false&quot; />&lt;/sessionOptions>&lt;/inputs>"/>
+                <transition activity="Decision_1" commented="0"
+                    originalStyle="" points="" sourceX="138"
+                    sourceY="164" status="0" style="defaultEdge"
+                    targetX="145" targetY="255" transitionIndex="0"
+                    x="0" y="0">
+                    <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+            </Activity>
+            <Activity commented="0" continueOnFailure="0"
+                created="1510144916827"
+                description="if/else based decision"
+                displayName="Decision" height="100" interactive="0"
+                jobMode="0" name="Decision"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="rhombus;fontStyle=1" uniqueName="Decision_1"
+                waitSetting="0" width="100" x="95" y="205">
+                <inputs val="&lt;inputs>&lt;expression class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>xpath:{/workflow/ExecuteScript_1/exitCode}==0&lt;/expression>&lt;scriptType class=&quot;workflow.types.ScriptType&quot; _list_=&quot;false&quot;>JAVA&lt;/scriptType>&lt;/inputs>"/>
+                <transition activity="LogEvent_1" commented="0"
+                    displayName="Success" originalStyle="" points=""
+                    sourceX="145" sourceY="255" status="0"
+                    style="defaultEdge" targetX="138" targetY="425"
+                    transitionIndex="0" value="True" x="0" y="0">
+                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+                <transition activity="LogEvent_2" commented="0"
+                    displayName="Failed" originalStyle="" points=""
+                    sourceX="145" sourceY="255" status="0"
+                    style="defaultEdge" targetX="273" targetY="424"
+                    transitionIndex="0" value="False" x="0" y="0">
+                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+            </Activity>
+            <Activity commented="0" continueOnFailure="0"
+                created="1510144965833"
+                description="logs an event in the commcell console with the specified severity level"
+                displayName="LogEvent" height="34" interactive="0"
+                jobMode="0" name="LogEvent"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.LogEventActivity"
+                uniqueName="LogEvent_1" waitSetting="0" width="100"
+                x="88" y="408">
+                <inputs val="&lt;inputs>&lt;severity class=&quot;workflow.types.SeverityLevel&quot; _list_=&quot;false&quot;>INFO&lt;/severity>&lt;message class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>Success MA Indexcache config cahnge on xpath:{/workflow/ForEach_1/row/col[@name=&quot;name&quot;]} &lt;/message>&lt;/inputs>"/>
+            </Activity>
+            <Activity commented="0" continueOnFailure="0"
+                created="1510145093849"
+                description="logs an event in the commcell console with the specified severity level"
+                displayName="LogEvent" height="34" interactive="0"
+                jobMode="0" name="LogEvent"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.LogEventActivity"
+                uniqueName="LogEvent_2" waitSetting="0" width="100"
+                x="239" y="331">
+                <inputs val="&lt;inputs>&lt;severity class=&quot;workflow.types.SeverityLevel&quot; _list_=&quot;false&quot;>CRITICAL&lt;/severity>&lt;message class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>Faield MA Indexcache config cahnge on  xpath:{/workflow/ForEach_1/row/col[@name=&quot;name&quot;]}  xpath:{/workflow/ExecuteScript_1/commandOutput}&lt;/message>&lt;/inputs>"/>
+            </Activity>
+        </superProcess>
+        <activitySchema>
+            <outputs name="outputs">
+                <children attribute="0"
+                    className="workflow.types.data.DataRow"
+                    defaultValue="" hidden="0"
+                    inputType="workflow.types.data.DataRow" listType="0"
+                    name="row" type="{workflow.types.data}DataRow">
+                    <children attribute="0" className="java.lang.Object"
+                        defaultValue="" hidden="0"
+                        inputType="java.lang.Object" listType="1"
+                        name="col" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+                </children>
+            </outputs>
+            <inputs className="" name="" type="">
+                <children attribute="0" className="java.lang.String"
+                    hidden="0" inputType="java.lang.String" listType="0"
+                    name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+                <children attribute="0" className="java.lang.Object"
+                    hidden="0" inputType="java.lang.Object" listType="0"
+                    name="values" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+                <children attribute="0" className="java.lang.Integer"
+                    defaultValue="1" hidden="0"
+                    inputType="java.lang.Integer" listType="0"
+                    name="numberOfParallelExecutions" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+                <children attribute="0" className="java.lang.Boolean"
+                    defaultValue="false" hidden="0"
+                    inputType="java.lang.Boolean" listType="0"
+                    name="continueOnFailure" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+            </inputs>
+        </activitySchema>
+    </Activity>
+    <formProperties css="" formVersion="0" javaScript=""/>
+</Workflow_WorkflowDefinition>
