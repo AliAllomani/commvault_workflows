@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow_WorkflowDefinition apiMode="0" config="&lt;configuration />"
     description="Change bulk index cache config for media agents by group - used for disable alert messages from auto configured MAs on VSA AppAware clients&#xd;&#xa;&#xd;&#xa;Created by : Ali Allomani &lt;ali.allomani@ts.fujitsu.com>"
-    inputs="&lt;inputs>&lt;ClientGroup class=&quot;commvault.msgs.CvEntities.ClientGroupEntity&quot; _list_=&quot;false&quot;>&lt;clientGroupName>&lt;/clientGroupName>&lt;clientGroupId />&lt;/ClientGroup>&lt;/inputs>"
+    inputs="&lt;inputs>&lt;ClientGroup class=&quot;commvault.msgs.CvEntities.ClientGroupEntity&quot; _list_=&quot;false&quot;>&lt;clientGroupName />&lt;clientGroupId />&lt;/ClientGroup>&lt;/inputs>"
     interactive="0" isHtmlDescription="0"
     name="BulkChangeMAIndexCacheConfig" outputs="&lt;outputs />"
     revision="$Revision:  $"
@@ -36,8 +36,8 @@
         uniqueName="Start_1" waitSetting="0" width="58" x="45" y="52">
         <inputs val="&lt;inputs />"/>
         <transition activity="CommServDBQuery_1" commented="0"
-            originalStyle="" sourceX="72" sourceY="70" status="0"
-            style="defaultEdge" targetX="198" targetY="248"
+            originalStyle="" points="" sourceX="72" sourceY="70"
+            status="0" style="defaultEdge" targetX="198" targetY="248"
             transitionIndex="0" x="0" y="0">
             <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
         </transition>
@@ -52,10 +52,11 @@
         style="label;image=CommServDBQuery"
         uniqueName="CommServDBQuery_1" waitSetting="0" width="141"
         x="193" y="236">
-        <inputs val="&lt;inputs>&lt;commCell />&lt;query>Select c.name&amp;#xD;&#xd;&#xa;From APP_Client c&amp;#xD;&#xd;&#xa;INNER JOIN APP_ClientGroupAssoc a ON c.id = a.clientId&amp;#xD;&#xd;&#xa;INNER JOIN simInstalledPackages b ON b.ClientId = c.id&amp;#xD;&#xd;&#xa;WHERE a.clientGroupId = 'xpath:{/workflow/inputs/ClientGroup/clientGroupId}' and  b.simPackageID IN (select id from simPackage where Name = 'MediaAgent')&lt;/query>&lt;/inputs>"/>
+        <inputs val="&lt;inputs>&lt;commCell />&lt;query>Select c.name&amp;#xD;&#xd;&#xa;From APP_Client c&amp;#xD;&#xd;&#xa;INNER JOIN APP_ClientGroupAssoc a ON c.id = a.clientId&amp;#xD;&#xd;&#xa;INNER JOIN APP_ClientProp d ON d.componentNameId = c.id&amp;#xD;&#xd;&#xa;WHERE a.clientGroupId = 'xpath:{/workflow/inputs/ClientGroup/clientGroupId}' and d.attrName='Idx: alert space' and d.attrVal &amp;gt; '1024.0'&lt;/query>&lt;/inputs>"/>
         <transition activity="ForEach_1" commented="0" originalStyle=""
-            sourceX="263" sourceY="253" status="0" style="defaultEdge"
-            targetX="584" targetY="113" transitionIndex="0" x="0" y="0">
+            points="" sourceX="263" sourceY="253" status="0"
+            style="defaultEdge" targetX="584" targetY="113"
+            transitionIndex="0" x="0" y="0">
             <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
         </transition>
     </Activity>
@@ -170,15 +171,14 @@
                     hidden="0" inputType="java.lang.String" listType="0"
                     name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
                 <children attribute="0" className="java.lang.Object"
-                    displayName="" documentation="" hidden="0"
-                    inputType="java.lang.Object" listType="0"
-                    name="values" readOnly="0" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+                    hidden="0" inputType="java.lang.Object" listType="0"
+                    name="values" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
                 <children attribute="0" className="java.lang.Integer"
-                    defaultValue="1" displayName="" hidden="0"
+                    defaultValue="1" hidden="0"
                     inputType="java.lang.Integer" listType="0"
                     name="numberOfParallelExecutions" type="{http://www.w3.org/2001/XMLSchema}integer"/>
                 <children attribute="0" className="java.lang.Boolean"
-                    defaultValue="false" displayName="" hidden="0"
+                    defaultValue="false" hidden="0"
                     inputType="java.lang.Boolean" listType="0"
                     name="continueOnFailure" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
             </inputs>
