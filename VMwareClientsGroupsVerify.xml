@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow_WorkflowDefinition apiMode="0" config="&lt;configuration />"
+    description="" executeOnWeb="0"
+    inputs="&lt;inputs>&lt;ClientGroupPrefix class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>DPVLVVC01_&lt;/ClientGroupPrefix>&lt;/inputs>"
+    interactive="0" isHtmlDescription="0"
+    name="VMwareClientsGroupsVerify" outputs="&lt;outputs />"
+    revision="$Revision:  $" tags=""
+    uniqueGuid="87ff1136-1923-4957-b41b-9ceace94636b"
+    variables="&lt;variables />" webHidden="0" workflowId="0">
+    <schema>
+        <outputs className="" name="outputs" type=""/>
+        <variables className="" name="variables" type=""/>
+        <inputs attribute="0" className="" name="inputs" type="">
+            <children attribute="0" className="java.lang.String"
+                controlType="0" defaultValue="" displayName=""
+                documentation="" hidden="0" inputType="java.lang.String"
+                listType="0" name="ClientGroupPrefix" readOnly="0" type="{http://www.w3.org/2001/XMLSchema}string"/>
+        </inputs>
+        <config className="" name="configuration" type=""/>
+    </schema>
+    <Start commented="0" continueOnFailure="0" created="0"
+        description="" displayName="Start" height="36" interactive="0"
+        jobMode="0" name="Start" originalStyle="" skipAttempt="0"
+        style="image;image=/images/jgraphx/house.png"
+        uniqueName="Start_1" waitSetting="0" width="58" x="45" y="41">
+        <inputs val="&lt;inputs />"/>
+        <transition activity="CommServDBQuery_1" commented="0"
+            originalStyle="" points="" sourceX="72" sourceY="59"
+            status="0" style="defaultEdge" targetX="250" targetY="134"
+            transitionIndex="0" x="0" y="0">
+            <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+        </transition>
+    </Start>
+    <Activity commented="0" continueOnFailure="0"
+        created="1544443335739"
+        description="executes queries against a commcell database"
+        displayName="CommServDBQuery" height="34" interactive="0"
+        jobMode="0" name="CommServDBQuery"
+        namespaceUri="commvault.cte.workflow.activities"
+        originalStyle="" skipAttempt="0"
+        style="label;image=commvault.cte.workflow.activities.CommServDBQuery"
+        uniqueName="CommServDBQuery_1" waitSetting="0" width="143"
+        x="179" y="117">
+        <inputs val="&lt;inputs>&lt;commCell />&lt;query>SELECT clientId  FROM APP_ClientGroupAssoc where clientgroupid IN (SELECT [id] FROM APP_ClientGroup where name like 'xpath:{/workflow/inputs/ClientGroupPrefix}%') group by clientId having count (*) &amp;gt; 1&amp;#xD;&#xd;&#xa;&lt;/query>&lt;/inputs>"/>
+        <transition activity="ForEach_1" commented="0" originalStyle=""
+            points="" sourceX="250" sourceY="134" status="0"
+            style="defaultEdge" targetX="806" targetY="308"
+            transitionIndex="0" x="0" y="0">
+            <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+        </transition>
+    </Activity>
+    <Activity commented="0" continueOnFailure="0"
+        created="1544443372385"
+        description="iterates a group of activities over a list of values"
+        displayName="ForEach" height="333" interactive="0" jobMode="0"
+        name="ForEach" namespaceUri="commvault.cte.workflow.activities"
+        originalStyle="" skipAttempt="0" style="swimlane"
+        uniqueName="ForEach_1" waitSetting="0" width="578" x="517" y="142">
+        <inputs val="&lt;inputs>&lt;name class=&quot;java.lang.String&quot;>row&lt;/name>&lt;values class=&quot;java.lang.Object&quot; _list_=&quot;false&quot;>xpath:{/workflow/CommServDBQuery_1/resultSets/row}&lt;/values>&lt;numberOfParallelExecutions class=&quot;java.lang.Integer&quot; _list_=&quot;false&quot;>1&lt;/numberOfParallelExecutions>&lt;continueOnFailure class=&quot;java.lang.Boolean&quot; _list_=&quot;false&quot;>false&lt;/continueOnFailure>&lt;/inputs>"/>
+        <superProcess>
+            <Start commented="0" continueOnFailure="0"
+                created="1544443372385" description=""
+                displayName="Start" height="30" interactive="0"
+                jobMode="0" name="Start" originalStyle=""
+                skipAttempt="0"
+                style="label;fillColor=#FFFF33;gradientColor=#FFFF00"
+                uniqueName="Start_2" waitSetting="0" width="120" x="18" y="30">
+                <inputs val="&lt;inputs />"/>
+                <transition activity="CommServDBQuery_2" commented="0"
+                    originalStyle="" points="" sourceX="78" sourceY="45"
+                    status="0" style="defaultEdge" targetX="252"
+                    targetY="137" transitionIndex="0" x="0" y="0">
+                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+            </Start>
+            <Activity commented="0" continueOnFailure="0"
+                created="1544443411775"
+                description="executes queries against a commcell database"
+                displayName="CommServDBQuery" height="34"
+                interactive="0" jobMode="0" name="CommServDBQuery"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.CommServDBQuery"
+                uniqueName="CommServDBQuery_2" waitSetting="0"
+                width="143" x="85" y="203">
+                <inputs val="&lt;inputs>&lt;commCell />&lt;query>select c.name as clientname , cg.name as groupname from APP_ClientGroupAssoc cga left join APP_ClientGroup cg on cga.clientgroupid = cg.id left join APP_Client c on c.id = cga.clientid where cga.clientid=xpath:{/workflow/ForEach_1/row/col[@name=&quot;clientId&quot;]} and cg.name like 'xpath:{/workflow/inputs/ClientGroupPrefix}%'&lt;/query>&lt;/inputs>"/>
+                <transition activity="LogEvent_1" commented="0"
+                    originalStyle="" status="0" style="defaultEdge"
+                    transitionIndex="0" x="0" y="0">
+                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
+            </Activity>
+            <Activity commented="0" continueOnFailure="0"
+                created="1544451983164"
+                description="logs an event in the commcell console with the specified severity level"
+                displayName="LogEvent" height="34" interactive="0"
+                jobMode="0" name="LogEvent"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.LogEventActivity"
+                uniqueName="LogEvent_1" waitSetting="0" width="100"
+                x="334" y="183">
+                <inputs val="&lt;inputs>&lt;severity class=&quot;workflow.types.SeverityLevel&quot; _list_=&quot;false&quot;>CRITICAL&lt;/severity>&lt;message class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>VM client defined in several VM groups xpath:{/workflow/CommServDBQuery_2/resultSets/row}&lt;/message>&lt;/inputs>"/>
+            </Activity>
+        </superProcess>
+        <activitySchema>
+            <outputs name="outputs">
+                <children attribute="0"
+                    className="workflow.types.data.DataRow"
+                    defaultValue="" hidden="0"
+                    inputType="workflow.types.data.DataRow" listType="0"
+                    name="row" type="{workflow.types.data}DataRow">
+                    <children attribute="0" className="java.lang.Object"
+                        defaultValue="" hidden="0"
+                        inputType="java.lang.Object" listType="1"
+                        name="col" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+                </children>
+            </outputs>
+            <inputs className="" name="" type="">
+                <children attribute="0" className="java.lang.String"
+                    hidden="0" inputType="java.lang.String" listType="0"
+                    name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+                <children attribute="0" className="java.lang.Object"
+                    hidden="0" inputType="java.lang.Object" listType="0"
+                    name="values" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+                <children attribute="0" className="java.lang.Integer"
+                    defaultValue="1" displayName="" hidden="0"
+                    inputType="java.lang.Integer" listType="0"
+                    name="numberOfParallelExecutions" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+                <children attribute="0" className="java.lang.Boolean"
+                    defaultValue="false" hidden="0"
+                    inputType="java.lang.Boolean" listType="0"
+                    name="continueOnFailure" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+            </inputs>
+        </activitySchema>
+    </Activity>
+</Workflow_WorkflowDefinition>
