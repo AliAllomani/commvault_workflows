@@ -84,10 +84,11 @@
                 uniqueName="CommServDBQuery_2" waitSetting="0"
                 width="143" x="85" y="203">
                 <inputs val="&lt;inputs>&lt;commCell />&lt;query>select c.name as clientname , cg.name as groupname from APP_ClientGroupAssoc cga left join APP_ClientGroup cg on cga.clientgroupid = cg.id left join APP_Client c on c.id = cga.clientid where cga.clientid=xpath:{/workflow/ForEach_1/row/col[@name=&quot;clientId&quot;]} and cg.name like 'xpath:{/workflow/inputs/ClientGroupPrefix}%'&lt;/query>&lt;/inputs>"/>
-                <transition activity="LogEvent_1" commented="0"
-                    originalStyle="" status="0" style="defaultEdge"
-                    transitionIndex="0" x="0" y="0">
-                    <condition script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                <transition activity="CommServDBQuery_3" commented="0"
+                    originalStyle="" sourceX="156" sourceY="220"
+                    status="0" style="defaultEdge" targetX="257"
+                    targetY="285" transitionIndex="0" x="0" y="0">
+                    <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
                 </transition>
             </Activity>
             <Activity commented="0" continueOnFailure="0"
@@ -99,8 +100,26 @@
                 originalStyle="" skipAttempt="0"
                 style="label;image=commvault.cte.workflow.activities.LogEventActivity"
                 uniqueName="LogEvent_1" waitSetting="0" width="100"
-                x="334" y="183">
-                <inputs val="&lt;inputs>&lt;severity class=&quot;workflow.types.SeverityLevel&quot; _list_=&quot;false&quot;>CRITICAL&lt;/severity>&lt;message class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>VM client defined in several VM groups xpath:{/workflow/CommServDBQuery_2/resultSets/row}&lt;/message>&lt;/inputs>"/>
+                x="411" y="198">
+                <inputs val="&lt;inputs>&lt;severity class=&quot;workflow.types.SeverityLevel&quot; _list_=&quot;false&quot;>CRITICAL&lt;/severity>&lt;message class=&quot;java.lang.String&quot; _list_=&quot;false&quot;>VM client defined in several VM groups xpath:{/workflow/CommServDBQuery_2/resultSets/row}, last backup from xpath:{/workflow/CommServDBQuery_3/resultSets/row/col[@name=&quot;name&quot;]}&lt;/message>&lt;/inputs>"/>
+            </Activity>
+            <Activity commented="0" continueOnFailure="0"
+                created="1544695483644"
+                description="executes queries against a commcell database"
+                displayName="CommServDBQuery" height="34"
+                interactive="0" jobMode="0" name="CommServDBQuery"
+                namespaceUri="commvault.cte.workflow.activities"
+                originalStyle="" skipAttempt="0"
+                style="label;image=commvault.cte.workflow.activities.CommServDBQuery"
+                uniqueName="CommServDBQuery_3" waitSetting="0"
+                width="143" x="162" y="278">
+                <inputs val="&lt;inputs>&lt;commCell />&lt;query>select c.name from VMProtectionCoverage(5,'') vm left join JMBkpStats j on j.jobId = vm.LastSuccessfulBackupJobId left join APP_Application a on a.id = j.appId left join app_client c on c.id = a.clientId where vm.VMName like 'xpath:{/workflow/CommServDBQuery_2/resultSets/row[1]/col[@name=&quot;clientname&quot;]}'&lt;/query>&lt;/inputs>"/>
+                <transition activity="LogEvent_1" commented="0"
+                    originalStyle="" sourceX="233" sourceY="295"
+                    status="0" style="defaultEdge" targetX="412"
+                    targetY="211" transitionIndex="0" x="0" y="0">
+                    <condition language="1" script="/*&#xa;The expression should return a boolean. Use the variable name &quot;activity&quot; to refer to the previous activity object. Example:&#xa;activity.exitCode==0;&#xa;*/&#xa;"/>
+                </transition>
             </Activity>
         </superProcess>
         <activitySchema>
@@ -124,7 +143,7 @@
                     hidden="0" inputType="java.lang.Object" listType="0"
                     name="values" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
                 <children attribute="0" className="java.lang.Integer"
-                    defaultValue="1" displayName="" hidden="0"
+                    defaultValue="1" hidden="0"
                     inputType="java.lang.Integer" listType="0"
                     name="numberOfParallelExecutions" type="{http://www.w3.org/2001/XMLSchema}integer"/>
                 <children attribute="0" className="java.lang.Boolean"
